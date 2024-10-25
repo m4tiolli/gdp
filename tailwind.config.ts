@@ -9,9 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        azul: "#38457a",
+        vermelho: "#d84c4c"
       },
+      backgroundImage: {
+        'pattern': "url('/pattern.svg')"
+      }
     },
   },
   plugins: [],
