@@ -14,7 +14,7 @@ const config: Config = {
       },
       backgroundImage: {
         'pattern': "url('/pattern.svg')"
-      }
+      },
     },
   },
   plugins: [],
