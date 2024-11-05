@@ -12,7 +12,7 @@ interface IInputField {
 
 const InputField = ({ label, name, type, value, onChange, isInvalid, errorMessage }: IInputField) => (
   <FormControl isInvalid={isInvalid}>
-    <FormLabel color="blue.700">{label}</FormLabel>
+    <FormLabel color="azul.700">{label}</FormLabel>
       <Input type={type} name={name} value={value} onChange={onChange} focusBorderColor="azul.500" />
     {isInvalid && <FormErrorMessage>{errorMessage}</FormErrorMessage>}
   </FormControl>

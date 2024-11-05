@@ -48,8 +48,6 @@ function Login() {
     try {
       const response = await axios.post<TokenData>('/api/login', values);
       const { token } = response.data;
-
-      // Armazenar o token no localStorage para acesso seguro
       localStorage.setItem('token', token);
       F.showToast(toast, 'Sucesso', 'Bem-vindo.', 'success');
       setTimeout(() => {

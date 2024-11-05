@@ -1,40 +1,40 @@
-import { ReactElement } from "react";
-import { GoHome } from "react-icons/go";
-import { BiSpreadsheet } from "react-icons/bi";
-import { IoSettingsOutline } from "react-icons/io5";
-import { MdLockOutline } from "react-icons/md";
-import { LuPlusCircle } from "react-icons/lu";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import home from '../public/icons/Home.svg'
+import novo from '../public/icons/Criar novo.svg'
+import visualizar from '../public/icons/Visualizar.svg'
+import config from '../public/icons/Configurações.svg'
+import admin from '../public/icons/Painel de admin.svg'
 
 interface IMenuButtons {
   link: string;
   text: string;
-  icon: ReactElement
+  icon: string | StaticImport
 }
 
 export const MenuButtons: IMenuButtons[] = [
   {
     link: "/dashboard",
     text: "Home",
-    icon: <GoHome className="text-4xl" />
+    icon: home
   },
   {
     link: "/dashboard/novo",
     text: "Criar novo",
-    icon: <LuPlusCircle className="text-4xl" />
+    icon: novo
   },
   {
     link: "/dashboard/visualizar",
     text: "Visualizar",
-    icon: <BiSpreadsheet className="text-4xl" />
+    icon: visualizar
   },
   {
     link: "/dashboard/configurações",
     text: "Configurações",
-    icon: <IoSettingsOutline className="text-4xl" />
+    icon: config
   },
   {
     link: "/admin",
     text: "Painel de admin",
-    icon: <MdLockOutline className="text-4xl" />
+    icon: admin
   },
 ]

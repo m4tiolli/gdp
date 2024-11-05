@@ -3,13 +3,15 @@
 @tailwind utilities;
 
 * {
-  --chakra-colors-blue-100: #38457a !important;
-  --chakra-colors-blue-200: #38457a !important;
-  --chakra-colors-blue-300: #38457a !important;
-  --chakra-colors-blue-400: #38457a !important;
-  --chakra-colors-blue-500: #38457a !important;
-  --chakra-colors-blue-600: #38457a !important;
-  --chakra-colors-blue-700: #38457a !important;
-  --chakra-colors-blue-800: #38457a !important;
-  --chakra-colors-blue-900: #38457a !important;
+  user-select: text !important;
+}
+
+::selection {
+  color: white;
+  background-color: #d84c4c;
+}
+
+.menu:hover~.bg {
+  visibility: visible;
+  opacity: 100;
 }

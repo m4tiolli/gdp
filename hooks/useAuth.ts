@@ -16,6 +16,7 @@ type DecodedToken = {
 export function useAuth() {
   const toast = useToast();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [tokenData, setTokenData] = useState<DecodedToken>()
   const router = useRouter();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export function useAuth() {
     if (token) {
       try {
         const decodedToken = jwtDecode<DecodedToken>(token);
+        setTokenData(decodedToken)
 
         if (decodedToken.exp * 1000 > Date.now()) {
           setIsAuthenticated(true);
@@ -43,5 +45,5 @@ export function useAuth() {
     }
   }, [router, toast]);
 
-  return { isAuthenticated };
+  return { isAuthenticated, tokenData };
 }
