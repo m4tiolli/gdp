@@ -14,7 +14,7 @@ function Menu() {
         <div className='w-[4rem] h-full'>&nbsp;</div>
         <div className='w-[4rem] h-full bg-white absolute left-0 top-0 transition-all hover:w-[15vw] cursor-pointer shadow-md overflow-x-clip'>
           <div className="relative flex flex-col items-start justify-between pt-24 p-2 h-full w-[15vw]">
-            <div className='flex flex-col items-start gap-2'>
+            <div className='flex flex-col items-stretch gap-2'>
               {MenuButtons.map((button, index) => (
                 <Button {...button} key={index} />
               ))}
