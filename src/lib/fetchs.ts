@@ -16,7 +16,7 @@ export const searchCNPJ = async (form: FormEF) => {
   try {
     const response = await axios.get(`https://open.cnpja.com/office/${cnpj}`, {
       headers: {
-        Authorization: `Bearer ffaafa01-3f8a-43eb-b361-6033430f3f98-55be84d3-2df7-4987-b151-49d9a0b6b0a6`,
+        Authorization: `Bearer ${process.env.BEARER_CNPJ ?? ""}`,
       },
     });
 

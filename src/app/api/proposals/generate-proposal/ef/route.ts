@@ -3,17 +3,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import path from "path";
-import { RowDataPacket } from "mysql2/promise";
+import { FieldPacket, RowDataPacket } from "mysql2/promise";
 import { Client } from "basic-ftp";
 import { Readable } from "stream";
 import { fields } from "./assets/fields";
-import { formatCNPJ, formatDate, formatValor } from "./assets/formats";
 import { db } from "@/utils/connections";
-import { Body } from "@/interfaces/ef.api";
+import { Body, FatorFinanceiro } from "@/interfaces/ef.api";
 import { validateToken } from "@/lib/auth";
+import { formatDate } from "./assets/formats";
+import 'dotenv/config'
+import { connectFTP } from "./assets/connectftp";
+
 
 export async function POST(req: NextRequest) {
   try {
+
     const body: Body = await req.json();
 
     const authHeader = req.headers.get("authorization")
@@ -22,7 +26,7 @@ export async function POST(req: NextRequest) {
     const pdfPathRecuperadora = path.resolve("src/app/api/proposals/generate-proposal/ef/assets/TemplateRecuperadora.pdf")
     const pdfPathServicos = path.resolve("src/app/api/proposals/generate-proposal/ef/assets/TemplateServicos.pdf")
 
-    const pdfPath = body.elo === "Recuperadora" ? pdfPathRecuperadora : pdfPathServicos
+    const pdfPath = body.cadastroElo === "R" ? pdfPathRecuperadora : pdfPathServicos
 
     const pdfBytes = fs.readFileSync(pdfPath as PathOrFileDescriptor);
     const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -32,6 +36,7 @@ export async function POST(req: NextRequest) {
       path.resolve("src/app/api/proposals/generate-proposal/ef/assets/SignikaNegative-Light.ttf")
     );
     const fontLight = await pdfDoc.embedFont(fontLightBytes);
+
     const fontBoldBytes = fs.readFileSync(
       path.resolve("src/app/api/proposals/generate-proposal/ef/assets/SignikaNegative-Regular.ttf")
     );
@@ -42,10 +47,7 @@ export async function POST(req: NextRequest) {
     fields({
       body,
       fontBold,
-      fontLight,
-      formatDate,
-      formatCNPJ,
-      formatValor,
+      fontLight
     }).forEach(({ name, value, font, size }) => {
       const field = form.getTextField(name);
       field.setFontSize(size);
@@ -55,17 +57,13 @@ export async function POST(req: NextRequest) {
 
     form.flatten();
     const pdfBytesFilled = await pdfDoc.save();
-    body.codigoProposta.replace(/ /g, "_");
-    const propostaNome = body.codigoProposta;
+    const propostaNome = body.codigoProposta.replace(/ /g, "_");
 
     const client = new Client();
+
     try {
-      await client.access({
-        host: "77.37.127.193",
-        user: "u867338340.GeradorProposta1122",
-        password: "Elo@1122",
-        secure: false,
-      });
+
+      await connectFTP(client)
 
       const bufferStream = new Readable();
       bufferStream.push(pdfBytesFilled);
@@ -73,17 +71,24 @@ export async function POST(req: NextRequest) {
 
       await client.uploadFrom(
         bufferStream,
-        "/propostas/" + propostaNome + ".pdf"
+        "propostas/" + propostaNome + ".pdf"
       );
       console.log("PDF salvo com sucesso no servidor FTP!");
 
       const downloadLink = `https://elosolutions.com.br/propostas/${propostaNome}.pdf`;
 
-      const numeroProposta = body.codigoProposta.slice(-5)
+      const numeroProposta = body.codigoProposta.slice(5, 10)
+
+      const [fatoresFinanceiros]: [FatorFinanceiro[], FieldPacket[]] = await db.query<FatorFinanceiro[]>(
+        "SELECT * FROM fatorFinanceiro WHERE meses = ?",
+        [body.duracaoContrato]
+      );
+
+      const fatorFinanceiroId = fatoresFinanceiros[0].id
 
       const ano = new Date().getFullYear();
       const query =
-        "INSERT INTO propostasEF (ano, id_usuario, proposta, nomeEmpresa, razaoEmpresa, cnpjEmpresa, tomador, departamento, email, telefone, potencia, valor, fatorFinanceiro_id, meses, link_pdf, data, contaEnergia, elo, numeroProposta) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        "INSERT INTO propostasEF (anoProposta, idUsuario, codigoProposta, nomeEmpresa, razaoEmpresa, cnpjEmpresa, nomeTomador, departamentoTomador, emailTomador, telefoneTomador, potenciaEquipamento, valorTotal, fatorFinanceiroId, duracaoContrato, linkPdf, dataProposta, valorContaEnergia, cadastroElo, numeroProposta) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       await db.query<RowDataPacket[]>(query, [
         ano,
         token.id,
@@ -98,11 +103,11 @@ export async function POST(req: NextRequest) {
         body.potenciaEquipamento,
         body.valorTotal,
         fatorFinanceiroId,
-        meses,
+        body.duracaoContrato,
         downloadLink,
         formatDate(body.dataProposta),
-        body.valorConta,
-        body.elo,
+        body.valorContaEnergia,
+        body.cadastroElo,
         parseInt(numeroProposta)
       ]);
 

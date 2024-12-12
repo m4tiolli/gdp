@@ -15,14 +15,12 @@ import { InputMask } from '@react-input/mask'
 import { Input } from "./ui/input"
 import Select from "./primitives/Select"
 import DatePicker from "./primitives/DatePicker"
-import { Body, CadastroElo } from "@/interfaces/ef.api"
+import { Body } from "@/interfaces/ef.api"
 import { getDepartamentos, getFatoresFinanceiros, getNextProposals, getUserInfo, post } from "@/lib/fetchs"
 import { useAuth } from "@/hooks/useAuth"
 import { AxiosResponse } from "axios"
 import { useToast } from "@/hooks/use-toast"
 import { ItemsSelect } from "@/interfaces/select"
-import { formatToExtenseDate } from "@/lib/formats"
-
 
 export default function TabsNewEF({ tabRef }: { tabRef: React.RefObject<HTMLDivElement> }) {
 
@@ -47,29 +45,7 @@ export default function TabsNewEF({ tabRef }: { tabRef: React.RefObject<HTMLDivE
   function onSubmit(values: z.infer<typeof schema>) {
     console.log(values)
     setLoading(true)
-    const body: Body = {
-      vendedor: values.nomeVendedor,
-      telefone1vendedor: values.telefone1Vendedor,
-      telefone2vendedor: values.telefone2Vendedor,
-      emailvendedor: values.emailVendedor,
-      departamentovendedor: values.departamentoVendedor,
-      tomador: values.nomeTomador,
-      telefone: values.telefoneTomador,
-      email: values.emailTomador,
-      departamento: values.departamentoTomador,
-      data: values.dataProposta.toLocaleDateString(),
-      dataFull: formatToExtenseDate(values.dataProposta.toString()),
-      proposta: values.codigoProposta,
-      nomeEmpresa: values.nomeEmpresa,
-      razao: values.razaoEmpresa,
-      cnpj: values.cnpjEmpresa,
-      potencia: values.potenciaEquipamento,
-      valorContaEnergia: values.valorConta,
-      valor: values.valorTotal,
-      meses: values.duracaoContrato,
-      fatorFinanceiroId: 1,
-      elo: (values.cadastroElo as CadastroElo)
-    }
+    const body: Body = values
     console.log(body);
 
     const treatResponse = (response: AxiosResponse<any, any>) => {
