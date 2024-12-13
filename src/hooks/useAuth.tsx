@@ -1,7 +1,7 @@
-"use client"
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { jwtDecode } from 'jwt-decode';
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 type DecodedToken = {
   id: number;
@@ -13,8 +13,8 @@ type DecodedToken = {
 
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
   const [tokenData, setTokenData] = useState<DecodedToken | null>(null);
-  const [token, setToken] = useState("")
   const [newToast, setNewToast] = useState<{
     title: string;
     description: string;
@@ -30,52 +30,57 @@ export function useAuth() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setToken(localStorage.getItem("token") || "")
-      if (token) {
+      const storedToken = localStorage.getItem("token");
+
+      if (storedToken) {
+        setToken(storedToken); // Atualiza o token no estado
+
         try {
-          const decodedToken = jwtDecode<DecodedToken>(token);
+          const decodedToken = jwtDecode<DecodedToken>(storedToken);
           setTokenData(decodedToken);
 
           if (decodedToken.exp * 1000 > Date.now()) {
             setIsAuthenticated(true);
           } else {
-            setNewToast({
-              title: "Sessão expirada",
-              description: "Sessão expirada, faça o login novamente.",
-              action: { text: "Fazer login" },
-              variant: "destructive",
-            });
-            localStorage.removeItem("token");
-            setTimeout(() => {
-              router.push("/login");
-            }, 2000);
+            handleSessionExpired();
           }
         } catch (error) {
           console.error("Erro ao decodificar o token:", error);
-          setNewToast({
-            title: "Erro",
-            description: "Token inválido, faça o login novamente.",
-            action: { text: "Fazer login" },
-            variant: "destructive",
-          });
-          localStorage.removeItem("token");
-          setTimeout(() => {
-            router.push("/login");
-          }, 2000);
+          handleInvalidToken();
         }
       } else {
-        setNewToast({
-          title: "Sessão expirada",
-          description: "Sessão expirada, faça o login novamente.",
-          action: { text: "Fazer login" },
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+        handleSessionExpired();
       }
     }
   }, [router]);
 
-  return { isAuthenticated, tokenData, newToast, token };
+  const handleSessionExpired = () => {
+    setNewToast({
+      title: "Sessão expirada",
+      description: "Sessão expirada, faça o login novamente.",
+      action: { text: "Fazer login" },
+      variant: "destructive",
+    });
+    localStorage.removeItem("token");
+    setToken(null);
+    setTimeout(() => {
+      router.push("/login");
+    }, 2000);
+  };
+
+  const handleInvalidToken = () => {
+    setNewToast({
+      title: "Erro",
+      description: "Token inválido, faça o login novamente.",
+      action: { text: "Fazer login" },
+      variant: "destructive",
+    });
+    localStorage.removeItem("token");
+    setToken(null);
+    setTimeout(() => {
+      router.push("/login");
+    }, 2000);
+  };
+
+  return { isAuthenticated, token, tokenData, newToast };
 }
