@@ -47,7 +47,7 @@ function HomeProposals() {
     }
     setFilteredProposals(
       proposals.filter((proposal) =>
-        proposal.numero_proposta.toLowerCase().includes(searchString.toLowerCase())
+        proposal.codigoProposta.toLowerCase().includes(searchString.toLowerCase())
       )
     );
   };
@@ -62,7 +62,7 @@ function HomeProposals() {
 
     setFilteredProposals(
       proposals.filter((proposal) =>
-        proposal.elo_proposta.toLowerCase() === selectedValue.toLowerCase()
+        proposal.cadastroElo.toLowerCase() === selectedValue.toLowerCase()
       )
     );
   };
@@ -74,7 +74,7 @@ function HomeProposals() {
     }
     setFilteredProposals(
       proposals.filter((proposal) =>
-        proposal.nome_usuario.toLowerCase().includes(responsibleString.toLowerCase())
+        proposal.nomeUsuario.toLowerCase().includes(responsibleString.toLowerCase())
       )
     );
   }
@@ -120,10 +120,10 @@ function HomeProposals() {
         <TableBody>
           {(filteredProposals).map((proposal, index) => (
             <TableRow key={index}>
-              <TableCell>{proposal.numero_proposta}</TableCell>
-              <TableCell>{proposal.elo_proposta === "R" ? "Recuperadora" : "Serviços"}</TableCell>
-              <TableCell>{proposal.nome_usuario}</TableCell>
-              <TableCell><Button onClick={() => window.open(proposal.link_pdf_proposta, '_blank')}>Ver PDF</Button></TableCell>
+              <TableCell>{proposal.codigoProposta}</TableCell>
+              <TableCell>{proposal.cadastroElo === "R" ? "Recuperadora" : "Serviços"}</TableCell>
+              <TableCell>{proposal.nomeUsuario}</TableCell>
+              <TableCell><Button onClick={() => window.open(proposal.linkPdf, '_blank')}>Ver PDF</Button></TableCell>
               <TableCell className='space-x-4'><Button>Criar nova versão</Button><DeleteProposalAlert proposal={proposal} proposals={proposals} setProposals={setFilteredProposals} /></TableCell>
             </TableRow>
           ))}

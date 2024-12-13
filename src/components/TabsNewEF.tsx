@@ -21,6 +21,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { AxiosResponse } from "axios"
 import { useToast } from "@/hooks/use-toast"
 import { ItemsSelect } from "@/interfaces/select"
+import { ToastAction } from "./ui/toast"
 
 export default function TabsNewEF({ tabRef }: { tabRef: React.RefObject<HTMLDivElement> }) {
 
@@ -29,7 +30,7 @@ export default function TabsNewEF({ tabRef }: { tabRef: React.RefObject<HTMLDivE
   const [nextProposals, setNextProposals] = React.useState({ propostaRecuperadora: "", propostaServicos: "" })
   const [departamentos, setDepartamentos] = React.useState<ItemsSelect[]>([])
   const [fatoresFinanceiros, setFatoresFinanceiros] = React.useState<ItemsSelect[]>([])
-  const [link, setLink] = React.useState("")
+  const [link, setLink] = React.useState<{ downloadLink: string }>()
   const { token, tokenData } = useAuth()
   const { toast } = useToast()
   const { form } = useForm()
@@ -43,21 +44,21 @@ export default function TabsNewEF({ tabRef }: { tabRef: React.RefObject<HTMLDivE
   }
 
   function onSubmit(values: z.infer<typeof schema>) {
-    console.log(values)
     setLoading(true)
     const body: Body = values
     console.log(body);
 
     const treatResponse = (response: AxiosResponse<any, any>) => {
       setLink(response.data.downloadLink)
-      setLoading(false)
       toast({
         title: "Sucesso",
         description: "Proposta gerada!",
+        action: <ToastAction altText="Ver PDF" onClick={() => window.open(link?.downloadLink, "_blank")}>Ver PDF</ToastAction>
       });
     }
     const response = post("/api/proposals/generate-proposal/ef", token ?? "", body)
     response.then((response) => treatResponse(response)).catch(err => console.error(err))
+    setLoading(false)
   }
 
   React.useEffect(() => {

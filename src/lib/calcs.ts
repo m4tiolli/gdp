@@ -4,8 +4,13 @@ import { z } from "zod";
 
 export const calcularValorTotal = (form: UseFormReturn<z.infer<typeof schema>>) => {
   const potencia = parseFloat(form.getValues("potenciaEquipamento")) || 0;
-  const valorConta = parseFloat(form.getValues("valorConta").replace(/[^\d,]/g, "").replace(",", ".")) || 0;
-  const fatorFinanceiro = parseFloat(form.getValues("duracaoContrato")) || 0;
+  const valorConta = parseFloat(form.getValues("valorContaEnergia").replace(/[^\d,]/g, "").replace(",", ".")) || 0;
+  const fatorFinanceiroMeses = parseFloat(form.getValues("duracaoContrato")) || 0;
+  
+  let fatorFinanceiro = 0
+  if (fatorFinanceiroMeses === 12) fatorFinanceiro = 10;
+  if (fatorFinanceiroMeses === 24) fatorFinanceiro = 8.5;
+  if (fatorFinanceiroMeses === 36) fatorFinanceiro = 7;
 
   console.table([
     "Potência * Fator: " + potencia * fatorFinanceiro,

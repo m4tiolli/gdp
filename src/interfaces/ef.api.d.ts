@@ -1,8 +1,10 @@
+import { schema } from "@/schemas/ef.schema";
 import { RowDataPacket } from "mysql2";
+import z from 'zod'
 
 export type CadastroElo = "Recuperadora" | "Serviços"
 
-export interface Body extends PropostaEF {
+export interface Body extends z.infer<typeof schema> {
   nomeVendedor: string;
   emailVendedor: string;
   telefone1Vendedor: string;

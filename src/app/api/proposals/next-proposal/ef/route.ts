@@ -13,18 +13,16 @@ export async function GET() {
     const anoAtual = new Date().getFullYear();
     const finalAno = anoAtual.toString().slice(2, 4)
 
-    const [rowsServicos] = await db.query<PropostaRow[]>(
-      'SELECT MAX(numeroProposta) AS maxIdServicos FROM propostasEF WHERE ano = ? AND elo = \'S\'',
-      [anoAtual]
-    );
+    const queryServicos = `SELECT MAX(numeroProposta) AS maxIdServicos FROM propostasEF WHERE anoProposta = ${anoAtual} AND cadastroElo = "S"`
 
-    const [rowsRecuperadora] = await db.query<PropostaRow[]>(
-      'SELECT MAX(numeroProposta) AS maxIdRecuperadora FROM propostasEF WHERE ano = ? AND elo = \'R\'',
-      [anoAtual]
-    );
+    const queryRecuperadora = `SELECT MAX(numeroProposta) AS maxIdRecuperadora FROM propostasEF WHERE anoProposta = ${anoAtual} AND cadastroElo = "R"`
+    
+    const [rowsServicos] = await db.query<PropostaRow[]>(queryServicos, [anoAtual]);
 
-    const maxIdServicos = rowsServicos[0]?.maxIdServicos ?? 0;
-    const maxIdRecuperadora = rowsRecuperadora[0]?.maxIdRecuperadora ?? 0;
+    const [rowsRecuperadora] = await db.query<PropostaRow[]>(queryRecuperadora, [anoAtual]);
+
+    const maxIdServicos = rowsServicos[0].maxIdServicos ?? 0;
+    const maxIdRecuperadora = rowsRecuperadora[0].maxIdRecuperadora ?? 0;
 
     const proximoIdServicos = maxIdServicos + 1;
     const proximoIdRecuperadora = maxIdRecuperadora + 1;

@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 
     const formattedRows = (rows as Array<any>).map((row: any) => ({
       label: row.meses + " meses de contrato",
-      value: row.porcentagem.toString(),
+      value: row.meses.toString(),
     }));
 
     return NextResponse.json(formattedRows, { status: 200 })

@@ -119,7 +119,7 @@ export const inputsEF: (form: FormEF, departamentos: ItemsSelect[], fatoresFinan
       {
         type: "currency",
         form: form,
-        name: "valorConta",
+        name: "valorContaEnergia",
         label: "Valor da conta de energia em R$",
         placeholder: "Valor da conta de energia em R$",
         onBlur: () => calcularValorTotal(form),

@@ -10,7 +10,7 @@ import { fields } from "./assets/fields";
 import { db } from "@/utils/connections";
 import { Body, FatorFinanceiro } from "@/interfaces/ef.api";
 import { validateToken } from "@/lib/auth";
-import { formatDate } from "./assets/formats";
+import { formatDateToISO, unformatCnpj, unformatTelefone } from "./assets/formats";
 import 'dotenv/config'
 import { connectFTP } from "./assets/connectftp";
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const pdfPathRecuperadora = path.resolve("src/app/api/proposals/generate-proposal/ef/assets/TemplateRecuperadora.pdf")
     const pdfPathServicos = path.resolve("src/app/api/proposals/generate-proposal/ef/assets/TemplateServicos.pdf")
 
-    const pdfPath = body.cadastroElo === "R" ? pdfPathRecuperadora : pdfPathServicos
+    const pdfPath = body.cadastroElo === "Recuperadora" ? pdfPathRecuperadora : pdfPathServicos
 
     const pdfBytes = fs.readFileSync(pdfPath as PathOrFileDescriptor);
     const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -95,18 +95,18 @@ export async function POST(req: NextRequest) {
         body.codigoProposta,
         body.nomeEmpresa,
         body.razaoEmpresa,
-        body.cnpjEmpresa,
+        unformatCnpj(body.cnpjEmpresa),
         body.nomeTomador,
         body.departamentoTomador,
         body.emailTomador,
-        body.telefoneTomador,
-        body.potenciaEquipamento,
-        body.valorTotal,
+        unformatTelefone(body.telefoneTomador),
+        parseFloat(body.potenciaEquipamento),
+        parseFloat(body.valorTotal),
         fatorFinanceiroId,
         body.duracaoContrato,
         downloadLink,
-        formatDate(body.dataProposta),
-        body.valorContaEnergia,
+        formatDateToISO(body.dataProposta),
+        parseFloat(body.valorContaEnergia),
         body.cadastroElo,
         parseInt(numeroProposta)
       ]);

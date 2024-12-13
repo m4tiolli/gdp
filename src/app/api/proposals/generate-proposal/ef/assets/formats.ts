@@ -15,6 +15,12 @@ export const formatCNPJ = (cnpj: string): string => {
   );
 };
 
+export const formatDateToISO = (dateString: string | Date): string => {
+  const date = new Date(dateString);
+  // Extrai apenas a parte YYYY-MM-DD da string gerada pelo toISOString
+  return date.toISOString().split("T")[0];
+};
+
 export const formatValor = (value: number): string => {
   return value.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -35,4 +41,12 @@ export const formatTelefone = (telefone: string): string => {
     // Retorna o número original se não tiver 10 ou 11 dígitos
     return telefone;
   }
+}
+
+export const unformatCnpj = (maskedCnpj: string) => {
+  return maskedCnpj.replace(/[./-]/g, "");
+};
+
+export const unformatTelefone = (maskedTelefone: string) => {
+  return maskedTelefone.replace(/[()\s-]/g, "")
 }
