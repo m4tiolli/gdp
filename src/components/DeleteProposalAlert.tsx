@@ -20,11 +20,11 @@ function DeleteProposalAlert({ proposal, proposals, setProposals }: { proposal: 
 
   const handleDeleteProposal = async () => {
     try {
-      const body = { code: proposal.numero_proposta, table: proposal.tabela_origem };
+      const body = { code: proposal.numeroProposta, table: proposal.nomeTabela };
       const response = await axios.delete("/api/proposals", { data: body });
 
       if (response.status === 200) {
-        setProposals(proposals.filter((prop) => prop.numero_proposta !== proposal.numero_proposta))
+        setProposals(proposals.filter((prop) => prop.numeroProposta !== proposal.numeroProposta))
         toast({
           title: "Sucesso",
           description: "Proposta deletada com sucesso!",
@@ -49,7 +49,7 @@ function DeleteProposalAlert({ proposal, proposals, setProposals }: { proposal: 
         <AlertDialogHeader>
           <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
           <AlertDialogDescription>
-            Essa ação não pode ser desfeita. Você irá excluir a proposta {proposal.numero_proposta} de nossa base de dados para sempre.
+            Essa ação não pode ser desfeita. Você irá excluir a proposta {proposal.numeroProposta} de nossa base de dados para sempre.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
