@@ -41,7 +41,7 @@ function NewProposal() {
         </SelectContent>
       </Select>
 
-      {selectedTemplate === "EF" && <TabsNewEF tabRef={tabRef} />}
+      {selectedTemplate === "EF" && <TabsNewEF tabRef={tabRef as React.RefObject<HTMLDivElement>} />}
 
     </div>
   )
