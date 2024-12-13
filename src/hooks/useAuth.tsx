@@ -14,6 +14,7 @@ type DecodedToken = {
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [tokenData, setTokenData] = useState<DecodedToken | null>(null);
+  const [token, setToken] = useState("")
   const [newToast, setNewToast] = useState<{
     title: string;
     description: string;
@@ -29,7 +30,7 @@ export function useAuth() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+      setToken(localStorage.getItem("token") || "")
       if (token) {
         try {
           const decodedToken = jwtDecode<DecodedToken>(token);
@@ -76,5 +77,5 @@ export function useAuth() {
     }
   }, [router]);
 
-  return { isAuthenticated, tokenData, newToast };
+  return { isAuthenticated, tokenData, newToast, token };
 }
