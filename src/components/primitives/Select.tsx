@@ -2,9 +2,9 @@ import React from 'react'
 import { Select as Base, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select"
 import { ISelect } from '@/interfaces/select'
 
-function Select({ placeholder, label, items, onChange, value }: ISelect) {
+function Select({ placeholder, label, items, onChange }: ISelect) {
   return (
-    <Base onValueChange={onChange} value={value}>
+    <Base onValueChange={onChange}>
       <SelectTrigger className='w-full'>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

@@ -3,7 +3,6 @@ export interface ISelect {
   label: string,
   items?: ItemsSelect[],
   onChange: () => void,
-  value: string
 }
 
 export interface ItemsSelect {

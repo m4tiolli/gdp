@@ -12,7 +12,7 @@ export function formatToExtenseDate(dateString: string | Date) {
   if (typeof dateString === 'string') date = new Date(dateString);
   else date = dateString;
   const options = { day: '2-digit', month: 'long', year: 'numeric' };
-  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date);
+  const formattedDate = new Intl.DateTimeFormat('pt-BR', options as { day: '2-digit', month: 'long', year: 'numeric' }).format(date);
 
   return formattedDate.replace(/^(\d+) de/, (match, day) => `${day} de`);
 }
