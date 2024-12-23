@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
           p.codigoProposta,
           p.numeroProposta,
           p.cadastroElo,
-          p.linkPdf
+          p.linkPdf,
+          p.nomeTabela
      FROM usuario u
     INNER JOIN (
              SELECT codigoProposta,
