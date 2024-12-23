@@ -13,7 +13,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    const query = `DELETE FROM ${table} WHERE proposta = ?`;
+    const query = `DELETE FROM ${table} WHERE codigoProposta = ?`;
     await db.query(query, [code]);
 
     return NextResponse.json(
