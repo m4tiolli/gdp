@@ -15,12 +15,13 @@ interface Usuario extends RowDataPacket {
   assinatura: string;
 }
 
-export async function GET(req: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization");
+    const searchParams = req.nextUrl.searchParams
     validateToken(authHeader);
 
-    const id = (await params).id
+    const id = searchParams.get('id')
 
     if (!id || isNaN(Number(id))) {
       return NextResponse.json({ error: "ID inválido" }, { status: 400 });
