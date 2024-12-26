@@ -18,9 +18,9 @@ interface Usuario extends RowDataPacket {
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authHeader = req.headers.get("authorization");
-    validateToken(authHeader)
+    validateToken(authHeader);
 
-    const { id } = await params;
+    const { id } = params;
 
     if (!id || isNaN(Number(id))) {
       return NextResponse.json({ error: "ID inválido" }, { status: 400 });
