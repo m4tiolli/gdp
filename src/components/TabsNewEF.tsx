@@ -62,12 +62,14 @@ export default function TabsNewEF({ tabRef }: { tabRef: React.RefObject<HTMLDivE
   }
 
   React.useEffect(() => {
-    Promise.all([
-      getNextProposals(token ?? "", setNextProposals),
-      getDepartamentos(token ?? "", setDepartamentos),
-      getFatoresFinanceiros(token ?? "", setFatoresFinanceiros),
-      getUserInfo(token ?? "", form, tokenData?.id as number)
-    ])
+    if (token) {
+      Promise.all([
+        getNextProposals(token ?? "", setNextProposals),
+        getDepartamentos(token ?? "", setDepartamentos),
+        getFatoresFinanceiros(token ?? "", setFatoresFinanceiros),
+        getUserInfo(token ?? "", form, tokenData?.id as number)
+      ])
+    }
   }, [token, tokenData, form])
 
   React.useEffect(() => {

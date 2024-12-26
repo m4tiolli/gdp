@@ -47,7 +47,7 @@ export const getFatoresFinanceiros = async (token: string, setFatoresFinanceiros
 
 export const getUserInfo = async (token: string, form: FormEF, id: number) => {
   if (id) {
-    const response = await get(`/api/profile&id=${id}`, token)
+    const response = await get(`/api/profile?id=${id}`, token)
     form.setValue("nomeVendedor", response.data.nome)
     form.setValue("emailVendedor", response.data.email)
     form.setValue("telefone1Vendedor", response.data.telefone1)

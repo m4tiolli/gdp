@@ -15,12 +15,14 @@ interface Usuario extends RowDataPacket {
   assinatura: string;
 }
 
+export const revalidade = 0
+
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const searchParams = req.nextUrl.searchParams
-    validateToken(authHeader);
+    const authHeader = await req.headers.get("authorization")
+    validateToken(authHeader)
 
+    const searchParams = req.nextUrl.searchParams
     const id = searchParams.get('id')
 
     if (!id || isNaN(Number(id))) {
