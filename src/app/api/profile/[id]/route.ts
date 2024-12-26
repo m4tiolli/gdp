@@ -15,7 +15,7 @@ interface Usuario extends RowDataPacket {
   assinatura: string;
 }
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authHeader = req.headers.get("authorization");
     validateToken(authHeader)
