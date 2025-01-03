@@ -14,6 +14,7 @@ import { formatDateToISO, unformatCnpj, unformatTelefone } from "./assets/format
 import 'dotenv/config'
 import { connectFTP } from "./assets/connectftp";
 
+export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
   try {
