@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       );
     } catch (error) {
       return NextResponse.json(
-        { message: "Erro ao salvar o PDF no FTP" },
+        { message: "Erro ao salvar o PDF no FTP" + error },
         { status: 500 }
       );
     } finally {
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
       ]);
     } catch (error) {
       return NextResponse.json(
-        { message: "Erro ao salvar os dados no banco de dados." },
+        { message: "Erro ao salvar os dados no banco de dados." + error },
         { status: 500 }
       );
     }
