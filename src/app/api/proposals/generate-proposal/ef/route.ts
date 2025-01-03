@@ -63,7 +63,6 @@ export async function POST(req: NextRequest) {
     const client = new Client();
 
     try {
-
       await connectFTP(client)
 
       const bufferStream = new Readable();
@@ -74,20 +73,30 @@ export async function POST(req: NextRequest) {
         bufferStream,
         "propostas/" + propostaNome + ".pdf"
       );
-      console.log("PDF salvo com sucesso no servidor FTP!");
-
-      const downloadLink = `https://elosolutions.com.br/propostas/${propostaNome}.pdf`;
-
-      const numeroProposta = body.codigoProposta.slice(5, 10)
-
-      const [fatoresFinanceiros]: [FatorFinanceiro[], FieldPacket[]] = await db.query<FatorFinanceiro[]>(
-        "SELECT * FROM fatorFinanceiro WHERE meses = ?",
-        [body.duracaoContrato]
+    } catch (error) {
+      return NextResponse.json(
+        { message: "Erro ao salvar o PDF no FTP" },
+        { status: 500 }
       );
+    } finally {
+      client.close()
+    }
+    console.log("PDF salvo com sucesso no servidor FTP!");
 
-      const fatorFinanceiroId = fatoresFinanceiros[0].id
+    const downloadLink = `https://elosolutions.com.br/propostas/${propostaNome}.pdf`;
 
-      const ano = new Date().getFullYear();
+    const numeroProposta = body.codigoProposta.slice(5, 10)
+
+    const [fatoresFinanceiros]: [FatorFinanceiro[], FieldPacket[]] = await db.query<FatorFinanceiro[]>(
+      "SELECT * FROM fatorFinanceiro WHERE meses = ?",
+      [body.duracaoContrato]
+    );
+
+    const fatorFinanceiroId = fatoresFinanceiros[0].id
+
+    const ano = new Date().getFullYear();
+
+    try {
       const query =
         "INSERT INTO propostasEF (anoProposta, idUsuario, codigoProposta, nomeEmpresa, razaoEmpresa, cnpjEmpresa, nomeTomador, departamentoTomador, emailTomador, telefoneTomador, potenciaEquipamento, valorTotal, fatorFinanceiroId, duracaoContrato, linkPdf, dataProposta, valorContaEnergia, cadastroElo, numeroProposta) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       await db.query<RowDataPacket[]>(query, [
@@ -111,17 +120,15 @@ export async function POST(req: NextRequest) {
         body.cadastroElo,
         parseInt(numeroProposta)
       ]);
-
-      return NextResponse.json({ downloadLink });
     } catch (error) {
-      console.error("Erro ao salvar PDF no FTP:", error);
       return NextResponse.json(
-        { message: "Error saving PDF to FTP" },
+        { message: "Erro ao salvar os dados no banco de dados." },
         { status: 500 }
       );
-    } finally {
-      client.close();
     }
+
+    return NextResponse.json({ downloadLink });
+
   } catch (error) {
     console.error("Error filling PDF:", error);
     return NextResponse.json(
