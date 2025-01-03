@@ -15,8 +15,6 @@ interface Usuario extends RowDataPacket {
   assinatura: string;
 }
 
-export const revalidade = 0
-
 export async function GET(req: NextRequest) {
   try {
     const authHeader = await req.headers.get("authorization")
